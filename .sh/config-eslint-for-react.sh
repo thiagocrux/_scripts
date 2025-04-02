@@ -1,1 +1,0 @@
-pnpm add eslint @eslint/js globals typescript-eslint eslint-plugin-react eslint-plugin-react-hooks -D

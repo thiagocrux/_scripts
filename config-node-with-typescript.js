@@ -1,23 +1,8 @@
 const { exec } = require('child_process');
-const path = require('node:path');
 const fs = require('node:fs');
-const { SETUP_PATH, SHELL_SCRIPTS_PATH } = require('./_config');
 
-const folderPath = path.join(SETUP_PATH, '/src');
-const fileName = 'index.ts';
+const SETUP_PATH = process.cwd();
 
-const fileContent = `
-  import express from 'express';
-
-  const app = express();
-
-  app.listen(3001, () => {
-    // eslint-disable-next-line no-console
-    console.log(\`Server running on http://localhost:3001\`);
-  });
-`;
-
-// Run npm scripts
 exec(
   `
     pnpm add -D express @types/express typescript tsx
@@ -37,15 +22,24 @@ exec(
     }
 
     // Create 'src' folder and 'index.ts' file
-    fs.mkdir(folderPath, { recursive: true }, (error) => {
+    fs.mkdir(`${SETUP_PATH}/src`, { recursive: true }, (error) => {
       if (error) {
         console.error('Error creating folder:', error);
         return;
       }
 
       fs.writeFile(
-        `${folderPath}/${fileName}`,
-        fileContent,
+        `${SETUP_PATH}/src/index.ts`,
+        `
+          import express from 'express';
+
+          const app = express();
+
+          app.listen(3001, () => {
+            // eslint-disable-next-line no-console
+            console.log(\`Server running on http://localhost:3001\`);
+          });
+        `,
         'utf8',
         (error) => {
           if (error) {
@@ -53,21 +47,17 @@ exec(
             return;
           }
 
-          console.log(`File '${fileName}' created successfully!\n`);
+          console.log(`File 'index.ts' created successfully!`);
         }
       );
     });
 
     // Formatting all files with prettier
-    exec('npx prettier . --write', (error, stdout, stderr) => {
-      console.log('Formatting files with prettier:\n');
+    exec('npx prettier . --write --single-quote', (error, stdout, stderr) => {
+      console.log('\n');
       console.log(stdout);
       console.log(stderr);
-
-      if (error) {
-        console.log(`[Prettier] Error:`, error);
-        return;
-      }
+      error && console.log(`[prettier] Error:`, error);
     });
   }
 );

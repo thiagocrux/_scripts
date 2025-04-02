@@ -1,9 +1,13 @@
 const { exec } = require('child_process');
 const fs = require('node:fs');
-const { SETUP_PATH, SHELL_SCRIPTS_PATH } = require('./_config');
+
+const SETUP_PATH = process.cwd();
 
 exec(
-  `sh "${SHELL_SCRIPTS_PATH}/config-commit-linters.sh"`,
+  `
+    pnpm add -D husky lint-staged @commitlint/cli   @commitlint/config-conventional
+    npx husky init
+  `,
   (error, stdout, stderr) => {
     console.log(stdout);
     console.log(stderr);
@@ -41,13 +45,13 @@ exec(
 
     // commitlint.config.js
 
-    const commitlintFileContent = `export default {
-  extends: ['@commitlint/config-conventional'],
-};`;
-
     fs.writeFile(
       `${SETUP_PATH}/commitlint.config.js`,
-      commitlintFileContent,
+      `
+        export default {
+          extends: ['@commitlint/config-conventional'],
+        };
+      `,
       'utf8',
       (error) => {
         return error
@@ -58,16 +62,17 @@ exec(
 
     // .lintstagedrc.mjs
 
-    const lintStagedFileContent = `export default {
-  '*.{js,ts,mjs,mts}': (filenames) => [
-  'npx prettier --write' + filenames.join(' '),
-  // 'eslint . --fix --ignore-pattern "dist/*"',
-  // config testing routine...,
-]};`;
-
     fs.writeFile(
       `${SETUP_PATH}/.lintstagedrc.mjs`,
-      lintStagedFileContent,
+      `
+        export default {
+          '*.{js,ts,mjs,mts}': (filenames) => [
+            \`npx prettier --write \${filenames.join(' ')}\`,
+            // 'eslint . --fix --ignore-pattern "dist/*"',
+            // config testing routine...,
+          ]
+        };
+      `,
       'utf8',
       (error) => {
         return error
@@ -75,5 +80,13 @@ exec(
           : console.log("File '.lintstagedrc.mjs' created successfully!");
       }
     );
+
+    // Formatting all files with prettier
+    exec('npx prettier . --write --single-quote', (error, stdout, stderr) => {
+      console.log('\n');
+      console.log(stdout);
+      console.log(stderr);
+      error && console.log(`[prettier] Error:`, error);
+    });
   }
 );
