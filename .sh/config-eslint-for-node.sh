@@ -1,0 +1,1 @@
+pnpm add eslint @eslint/js globals typescript-eslint -D
