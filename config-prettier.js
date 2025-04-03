@@ -3,6 +3,14 @@ const fs = require('node:fs');
 
 const SETUP_PATH = process.cwd();
 
+console.log(
+  `${'-'.repeat(
+    process.stdout.columns
+  )}\nINFO: This script requires the installation of Prettier's official extension in vscode to works.\n${'-'.repeat(
+    process.stdout.columns
+  )}\n`
+);
+
 // .prettierrc
 
 fs.writeFile(
@@ -70,9 +78,12 @@ fs.mkdir(`${SETUP_PATH}/.vscode`, { recursive: true }, (error) => {
 });
 
 // Formatting all files with prettier
-exec('npx prettier . --write --single-quote', (error, stdout, stderr) => {
-  console.log('\n');
-  console.log(stdout);
-  console.log(stderr);
-  error && console.log(`[prettier] Error:`, error);
-});
+exec(
+  'npx prettier .prettierrc .vscode/settings.json --write --single-quote',
+  (error, stdout, stderr) => {
+    console.log('\n');
+    console.log(stdout);
+    console.log(stderr);
+    error && console.log(`[prettier] Error:`, error);
+  }
+);

@@ -82,11 +82,14 @@ exec(
     );
 
     // Formatting all files with prettier
-    exec('npx prettier . --write --single-quote', (error, stdout, stderr) => {
-      console.log('\n');
-      console.log(stdout);
-      console.log(stderr);
-      error && console.log(`[prettier] Error:`, error);
-    });
+    exec(
+      'npx prettier .lintstagedrc.mjs commitlint.config.js --write --single-quote',
+      (error, stdout, stderr) => {
+        console.log('\n');
+        console.log(stdout);
+        console.log(stderr);
+        error && console.log(`[prettier] Error:`, error);
+      }
+    );
   }
 );

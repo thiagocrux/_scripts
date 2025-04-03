@@ -56,11 +56,14 @@ exec(
     );
 
     // Formatting all files with prettier
-    exec('npx prettier . --write --single-quote', (error, stdout, stderr) => {
-      console.log('\n');
-      console.log(stdout);
-      console.log(stderr);
-      error && console.log(`[prettier] Error:`, error);
-    });
+    exec(
+      'npx prettier eslint.config.mjs --write --single-quote',
+      (error, stdout, stderr) => {
+        console.log('\n');
+        console.log(stdout);
+        console.log(stderr);
+        error && console.log(`[prettier] Error:`, error);
+      }
+    );
   }
 );
