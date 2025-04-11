@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const SETUP_PATH = process.cwd();
 
 exec(
-  'pnpm add eslint @eslint/js globals typescript-eslint eslint-plugin-react eslint-plugin-react-hooks -D',
+  'pnpm add eslint @eslint/js globals typescript-eslint eslint-plugin-react eslint-plugin-react-hooks eslint-plugin-react-refresh -D',
   (error, stdout, stderr) => {
     console.log(stdout);
     console.log(stderr);
@@ -19,46 +19,34 @@ exec(
     fs.writeFile(
       `${SETUP_PATH}/eslint.config.mjs`,
       `
-        import globals from 'globals';
-        import js from '@eslint/js';
-        import tseslint from 'typescript-eslint';
-        import pluginReact from 'eslint-plugin-react';
-        import pluginReactHooks from 'eslint-plugin-react-hooks';
+        import js from '@eslint/js'
+        import globals from 'globals'
+        import reactHooks from 'eslint-plugin-react-hooks'
+        import reactRefresh from 'eslint-plugin-react-refresh'
+        import tseslint from 'typescript-eslint'
 
-        /** @type {import('eslint').Linter.Config[]} */
-        export default [
+        export default tseslint.config(
+          { ignores: ['dist'] },
           {
-            files: ['**/*.{js,ts,mjs,mts,cjs,jsx,tsx}'],
-          },
-          { languageOptions: { globals: globals.browser } },
-          js.configs.recommended,
-          pluginReact.configs.flat.recommended,
-          pluginReact.configs.flat['jsx-runtime'],
-          pluginReactHooks.configs['recommended-latest'],
-          ...tseslint.configs.strict,
-          ...tseslint.configs.stylistic,
-          {
-            settings: {
-              react: {
-                version: 'detect',
-              },
+            extends: [js.configs.recommended, ...tseslint.configs.recommended],
+            files: ['**/*.{ts,tsx}'],
+            languageOptions: {
+              ecmaVersion: 2020,
+              globals: globals.browser,
+            },
+            plugins: {
+              'react-hooks': reactHooks,
+              'react-refresh': reactRefresh,
             },
             rules: {
-              '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-              'class-methods-use-this': 'off',
-              'import/prefer-default-export': 'off',
-              'no-console': 'error',
-              'no-empty': ['error', { allowEmptyCatch: true }],
-              'react-hooks/exhaustive-deps': 'warn',
-              'react-hooks/rules-of-hooks': 'error',
-              'react/jsx-filename-extension': [1, { extensions: ['.ts', '.tsx'] }],
-              'react/jsx-no-bind': 'off',
-              'react/react-in-jsx-scope': 'off',
-              'react/require-default-props': 'off',
-              'react/jsx-uses-vars': 'error',
+              ...reactHooks.configs.recommended.rules,
+              'react-refresh/only-export-components': [
+                'warn',
+                { allowConstantExport: true },
+              ],
             },
           },
-        ];
+        )
       `,
       'utf8',
       (error) => {
