@@ -5,7 +5,7 @@ const SETUP_PATH = process.cwd();
 
 exec(
   `
-    pnpm add -D husky lint-staged @commitlint/cli   @commitlint/config-conventional
+    pnpm add -D husky lint-staged @commitlint/cli @commitlint/config-conventional
     npx husky init
   `,
   (error, stdout, stderr) => {
@@ -67,7 +67,7 @@ exec(
       `
         export default {
           '*.{js,ts,mjs,mts}': (filenames) => [
-            \`npx prettier --write \${filenames.join(' ')}\`,
+            \`npx prettier --write \${filenames.map((filename) => \`"\${filename}"\`).join(' ')}\`,
             // 'eslint . --fix --ignore-pattern "dist/*"',
             // config testing routine...,
           ]
