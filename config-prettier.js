@@ -63,7 +63,11 @@ fs.mkdir(`${SETUP_PATH}/.vscode`, { recursive: true }, (error) => {
     `
       {
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "always",
+          "source.sortImports": "always"
+        }
       }
     `,
     'utf8',
