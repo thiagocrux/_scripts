@@ -6,7 +6,7 @@ const SETUP_PATH = process.cwd();
 console.log(
   `${'-'.repeat(
     process.stdout.columns
-  )}\nINFO: This script requires the installation of Prettier's official extension in vscode to works.\n${'-'.repeat(
+  )}\nINFO: This script requires the installation of Prettier's official extension in vscode to work.\n${'-'.repeat(
     process.stdout.columns
   )}\n`
 );
